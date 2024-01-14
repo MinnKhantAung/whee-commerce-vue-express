@@ -2,6 +2,7 @@ const USER_PREFIX = import.meta.env.PREFIX + "user";
 const TOKEN_PREFIX = import.meta.env.PREFIX + "token";
 
 export const storeUser = (user, token) => {
+  console.log(user,token);
   if (!user || !token) return null;
   localStorage.setItem(USER_PREFIX, JSON.stringify(user));
   localStorage.setItem(TOKEN_PREFIX, token);

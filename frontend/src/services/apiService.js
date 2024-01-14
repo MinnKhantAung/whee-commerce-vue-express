@@ -51,8 +51,8 @@ export const useApi = (callback) => {
   async function call(data, config) {
     result.status = ApiStatus.LOADING;
     try {
-      const requestResponse = callback(data, config);
-      result.response = requestResponse;
+      const requestResponse = await callback(data, config);
+      result.response = await requestResponse;
       result.status = ApiStatus.SUCCESS;
     } catch (error) {
       result.status = ApiStatus.ERROR;
