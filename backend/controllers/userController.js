@@ -1,6 +1,7 @@
 import { User } from "../models/userModel.js";
 import bcrypt, { hash } from "bcrypt";
 import jwt from "jsonwebtoken";
+import { Roles } from "../constants/roles.js";
 
 export const getUsers = async (req, res) => {
   res.send("getUser");
@@ -11,16 +12,16 @@ export const registerUser = async (req, res) => {
   if (!name || !email || !password)
     return res.status(401).json({ message: "All Fields are Required!" });
   const avalibleUser = await User.findOne({ email });
-  if (!avalibleUser)
+  if (avalibleUser)
     return res.status(400).json({ message: "Email have been registered!" });
-  const hashedPassword = bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(password, 10);
   const user = await User.create({
     name,
     email,
     password: hashedPassword,
   });
   if (!user) return res.status(500).json({ message: "Something is wrong!" });
-  return res.status(201).josn({ message: "User is created!" });
+  return res.status(201).json({ message: "User is created!" });
 };
 
 export const loginUser = async (req, res) => {
@@ -40,17 +41,20 @@ export const loginUser = async (req, res) => {
       process.env.SECRECT_KEY,
       { expiresIn: "10m" }
     );
-    return res.status(200).json({accesstoken, user})
-  }else{
-    return res.status(401).json({message: "Email or Password is Invalid!"})
+    return res.status(200).json({ accesstoken, user });
+  } else {
+    return res.status(401).json({ message: "Email or Password is Invalid!" });
   }
 };
 
 export const createUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
 
   if (!name || !email || !password) {
     return res.status(400).send("Missing Required Fields!");
+  }
+  if (!role) {
+    return (role = Roles.BUYER);
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);

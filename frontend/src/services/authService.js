@@ -1,5 +1,5 @@
-const USER_PREFIX = import.meta.env.PREFIX + "user";
-const TOKEN_PREFIX = import.meta.env.PREFIX + "token";
+const USER_PREFIX = import.meta.env.VITE_PREFIX + "user";
+const TOKEN_PREFIX = import.meta.env.VITE_PREFIX + "token";
 
 export const storeUser = (user, token) => {
   console.log(user,token);

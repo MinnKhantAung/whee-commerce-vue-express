@@ -1,10 +1,19 @@
 <template>
   <div style="width: 30%; margin: 100px" class="mx-auto">
     <v-card>
-      <v-card-title class="text-center text-h4"> Login </v-card-title>
+      <v-card-title class="text-center text-h4"> Register </v-card-title>
       <v-card-text>
-        <v-form @submit.prevent="login" v-model="valid">
+        <v-form @submit.prevent="register" v-model="valid">
           <v-container>
+            <v-text-field
+              v-model="user.name"
+              variant="outlined"
+              label="Name"
+              required
+              hide-details
+              density="compact"
+              class="mb-3"
+            ></v-text-field>
             <v-text-field
               v-model="user.email"
               variant="outlined"
@@ -37,7 +46,7 @@
 <script setup>
 import { ref } from "vue";
 import { useApi, ApiStatus } from "../../services/apiService";
-import { userLogin } from "../../apis/userApi";
+import { userRegister } from "../../apis/userApi";
 import { useAuthStore } from "../../stores/auth";
 import { useRouter } from "vue-router";
 import { routeNames } from "../../routes/routeNames";
@@ -46,20 +55,21 @@ const valid = ref(false);
 const authStore = useAuthStore();
 const router = useRouter();
 
-const loginApi = useApi(userLogin);
+const registerApi = useApi(userRegister);
 const user = ref({
+  name: "",
   email: "",
   password: "",
 });
 
-const login = async () => {
-  await loginApi.call(user.value);
+const register = async () => {
+  await registerApi.call(user.value);
 
-  if (loginApi.status.value == ApiStatus.SUCCESS) {
-    let user = loginApi.response.value.data.user;
-    let token = loginApi.response.value.data.accesstoken;
+  if (registerApi.status.value == ApiStatus.SUCCESS) {
+    let user = registerApi.response.value.data.user;
+    let token = registerApi.response.value.data.accesstoken;
     authStore.storeAuth(user, token);
-    router.push({ name: routeNames.productList });
+    router.push({ name: routeNames.homeView });
   }
 };
 </script>
